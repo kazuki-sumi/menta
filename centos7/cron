@@ -1,1 +1,1 @@
-*/1 * * * * sh /servicecheck.sh
+*/1 * * * * sh /home/servicecheck.sh
