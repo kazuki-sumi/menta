@@ -1,6 +1,9 @@
-services=("nginx")
+#!/bin/bash
+# */1 * * * * sh /home/servicecheck.sh
 
-count=`ps aux | grep $services | grep -v grep | wc -l`
+PROCESSNAME01=nginx
+
+count=`pgrep $PROCESSNAME01 | wc -l`
 if [ $count == 0 ]; then
  echo "nginxのプロセスが死んでいるので起動します"
  sudo systemctl start nginx
