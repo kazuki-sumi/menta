@@ -9,6 +9,10 @@ Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
+  config.ssh.username = "menta"
+  config.ssh.guest_port = 22
+  # config.ssh.private_key_path = "/Users/sumikazuki/Desktop/menta/wordpress/.vagrant/machines/default/virtualbox/private_key"
+  # config.ssh.host = "127.0.0.1"
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
@@ -33,6 +37,7 @@ Vagrant.configure("2") do |config|
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   # config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
