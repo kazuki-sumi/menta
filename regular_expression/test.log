@@ -1,0 +1,6 @@
+# INSERT INTO menta_user (user_id, login_date) VALUES (00, '2019-12-25 18:31:38');
+# 以下にコマンドを記入
+# sed -i -e "s/^00.*8$/INSERT INTO menta_user (user_id, login_date) VALUES (00, '2019-12-25 18:31:38');/g" ファイルpath
+# 上記コマンドを実行すると「00, '2019-12-25 18:31:38'」が下記のようになる
+
+INSERT INTO menta_user (user_id, login_date) VALUES (00, '2019-12-25 18:31:38');
