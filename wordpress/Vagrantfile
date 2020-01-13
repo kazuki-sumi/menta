@@ -6,7 +6,7 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  config.ssh.username = "menta"
+  # config.ssh.username = "menta"
   config.ssh.guest_port = 22
   # config.ssh.private_key_path = "/Users/sumikazuki/Desktop/menta/wordpress/.vagrant/machines/default/virtualbox/private_key"
   # config.ssh.host = "127.0.0.1"
