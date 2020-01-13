@@ -1,0 +1,5 @@
+# mysqlの設定について
+ユーザ: root
+ホスト名: localhost
+db名: wordpress
+権限: ALL PRIVILEGES
