@@ -1,0 +1,4 @@
+# include_tasksモジュール
+# 現在のplaybookの実行中に別ファイルのタスクを含む(main.yml以外のplaybookとしてtasks/user.ymlを実行)
+- name: include tasks/user.yml
+  include_tasks: tasks/user.yml
