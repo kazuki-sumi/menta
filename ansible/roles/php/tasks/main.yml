@@ -1,0 +1,31 @@
+- name: install remi epel
+  yum: name={{ item }} state=present
+  loop:
+    - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+    - epel-release
+
+- name: php72 install
+  yum: name={{ item }} state=present enablerepo=remi,remi-php72,epel
+  loop:
+    - php
+    - php-fpm
+    - php-gd
+    - php-bcmath
+    - php-mbstring
+    - php-xml
+    - php-curl
+    - php-ldap
+    - php-mysqlnd
+    - php-opcache
+
+- name: copy php-fpm www.conf
+  copy:
+    dest: /etc/php-fpm.d/www.conf
+    src: ./roles/php/files/www.conf
+    backup: no
+    owner: root
+    group: root
+    mode: 0644
+
+- name: start php-fpm
+  systemd: name=php-fpm enabled=yes state=started
