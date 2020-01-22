@@ -1,0 +1,6 @@
+- name: yum install backpackage
+  yum: name={{ item }} state=present
+  loop:
+    - vim
+    - wget
+    - yum-cron
