@@ -1,0 +1,25 @@
+- name: install mysql
+  yum: name={{ item }} state=present
+  loop:
+    - mariadb-server
+    - MySQL-python
+
+- name: start mysql
+  systemd: name=mariadb enabled=yes state=started
+
+- name: database for wordpress is created
+  mysql_db:
+    name: wordpress
+    state: present
+
+- name: create mysql user
+  mysql_user:
+    name: "root"
+    password: "password"
+    host: "localhost"
+    priv: "wordpress.*:ALL,GRANT"
+
+- name: copy wp-config.php
+  copy:
+    dest: /var/www/pre.menta.me/wp-config.php
+    src: ./roles/mysql/files/wp-config.php
