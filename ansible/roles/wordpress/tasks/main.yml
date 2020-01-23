@@ -1,0 +1,17 @@
+- name: download wordpress
+  get_url:
+    dest: /var/www
+    url: https://ja.wordpress.org/latest-ja.tar.gz
+
+- name: unzip wordpress
+  unarchive:
+    dest: /var/www/
+    src: /var/www/wordpress-5.3.2-ja.tar.gz
+    remote_src: yes
+    group: nginx
+    owner: nginx
+
+- name: rename from wordpress to pre.menta.me
+  command:
+    cmd: mv wordpress pre.menta.me
+    chdir: /var/www

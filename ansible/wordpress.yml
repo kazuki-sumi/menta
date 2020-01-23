@@ -11,3 +11,4 @@
   roles:
     - nginx
     - php
+    - wordpress
