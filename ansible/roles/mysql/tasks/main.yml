@@ -23,3 +23,9 @@
   copy:
     dest: /var/www/pre.menta.me/wp-config.php
     src: ./roles/mysql/files/wp-config.php
+
+- name: restart nginx and php-fpm
+  systemd: name={{ item }} state=restarted daemon_reload=yes
+  loop:
+    - nginx
+    - php-fpm
