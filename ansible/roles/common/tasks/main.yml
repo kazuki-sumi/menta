@@ -5,3 +5,6 @@
 
 - name: include tasks/base-package.yml
   include_tasks: tasks/base-packages.yml
+
+- name: include tasks/hosts.yml
+  include_tasks: tasks/hosts.yml
