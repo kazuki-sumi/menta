@@ -2,12 +2,14 @@
 # パスワードをハッシュ化する必要がある。でないと警告がでる。
 - name: create user
   user:
-    name: menta
-    create_home: yes
-    password: "{{ 'password' | password_hash('sha512') }}"
-    shell: /bin/bash
-    state: present
-    remove: no
+    name: "{{ item.name }}"
+    create_home: "{{ item.create_home }}"
+    password: "{{ item.password | password_hash('sha512') }}"
+    shell: "{{ item.shell }}"
+    state: "{{ item.state }}"
+    remove: "{{ item.remove }}"
+  loop:
+  - { name: 'menta', create_home: 'yes', password: 'password', shell: '/bin/bash', state: 'present', remove: 'no' }
 
 - name: add sudoers
   lineinfile:
