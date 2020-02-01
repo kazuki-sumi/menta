@@ -1,0 +1,11 @@
+# hosts: インベントリーファイルに記載したグループを指定。allなら全て
+- hosts: all
+  roles:
+    - common
+
+- hosts: pre
+  roles:
+    - nginx
+    - php
+    - wordpress
+    - mysql

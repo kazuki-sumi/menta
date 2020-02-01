@@ -1,0 +1,60 @@
+- name: copy nginx.repo
+  copy:
+    dest: /etc/yum.repos.d/nginx.repo
+    src: ./roles/nginx/files/nginx.repo
+
+- name: install nginx and openssl
+  yum: name={{ item }} state=present
+  loop:
+    - nginx
+    - openssl
+    - python-pip
+
+- name: install pyOpenSSL
+  pip: name={{ item }} state=present
+  loop:
+    - pyOpenSSL
+
+- name: start nginx
+  systemd: name=nginx enabled=yes state=started
+
+- name: mkdir ssl
+  file:
+    state: directory
+    path: /etc/nginx/ssl
+    owner: root
+    group: root
+    mode: 0644
+
+- name: create ssl_server_key
+  openssl_privatekey:
+    path: /etc/nginx/ssl/server.key
+    owner: root
+    group: root
+    state: present
+
+- name: create csr
+  openssl_csr:
+    path: /etc/nginx/ssl/server.csr
+    state: present
+    privatekey_path: /etc/nginx/ssl/server.key
+    owner: root
+    group: root
+
+- name: create crt
+  openssl_certificate:
+    path: /etc/nginx/ssl/server.crt
+    state: present
+    csr_path: /etc/nginx/ssl/server.csr
+    provider: selfsigned
+    privatekey_path: /etc/nginx/ssl/server.key
+
+- name: copy nginx pre.menta.me.conf
+  copy:
+    dest: /etc/nginx/conf.d/pre.menta.me.conf
+    src: ./roles/nginx/files/pre.menta.me.conf
+    backup: no
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx

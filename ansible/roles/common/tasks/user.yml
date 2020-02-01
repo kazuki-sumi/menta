@@ -1,0 +1,35 @@
+# 新規ユーザ作成 userモジュール使用
+# パスワードをハッシュ化する必要がある。でないと警告がでる。
+- name: create user
+  user:
+    name: "{{ item.name }}"
+    create_home: "{{ item.create_home }}"
+    password: "{{ item.password | password_hash('sha512') }}"
+    shell: "{{ item.shell }}"
+    state: "{{ item.state }}"
+    remove: "{{ item.remove }}"
+  loop:
+  - { name: 'menta', create_home: 'yes', password: 'password', shell: '/bin/bash', state: 'present', remove: 'no' }
+
+- name: add sudoers
+  lineinfile:
+    path: /etc/sudoers.d/menta
+    create: yes
+    state: present
+    regexp: menta
+    line: 'menta ALL=(ALL) NOPASSWD: ALL'
+
+- name: mkdir .ssh
+  file:
+    state: directory
+    path: /home/menta/.ssh/
+    owner: menta
+    group: menta
+    mode: 0700
+
+- name: authorized_key for user menta
+  ignore_errors: true
+  authorized_key:
+    user: menta
+    key: "{{ lookup('file', PUBLIC_KEY_PATH) }}"
+    path: /home/menta/.ssh/authorized_keys

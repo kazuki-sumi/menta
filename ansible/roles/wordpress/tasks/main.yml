@@ -1,0 +1,28 @@
+- name: download wordpress
+  get_url:
+    dest: /var/www
+    url: "{{ WORDPRESS_URL }}"
+
+- name: unzip wordpress
+  unarchive:
+    dest: /var/www/
+    src: /var/www/wordpress-5.3.2-ja.tar.gz
+    remote_src: yes
+    group: nginx
+    owner: nginx
+
+- name: delete wordpress-5.3.2-ja.tar.gz
+  file :
+    state: absent
+    path: /var/www/wordpress-5.3.2-ja.tar.gz
+
+- name: rename from wordpress to pre.menta.me
+  command:
+    cmd: mv wordpress pre.menta.me
+    chdir: /var/www
+    creates: /var/www/pre.menta.me
+
+- name: copy wp-config.php
+  copy:
+    dest: /var/www/pre.menta.me/wp-config.php
+    src: ./roles/mysql/files/wp-config.php

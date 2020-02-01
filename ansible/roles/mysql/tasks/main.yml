@@ -1,0 +1,52 @@
+- name: delete mariadb
+  yum:
+    name: mariadb-libs
+    state: removed
+
+- name: install rpm
+  yum: name={{ item }} state=present
+  loop:
+    - "{{ MYSQL_VERSION }}"
+
+- name: install mysqld
+  yum: name={{ item }} state=installed
+  loop:
+    - mysql-community-server
+    - MySQL-python
+
+- name: start mysql
+  systemd: name=mysqld enabled=yes state=started
+
+# MySQL 5.7.4からはセキュリティの向上のため、最初に臨時のrootパスワードが割り当てられる。
+# そのrootパスワードを変更しないと、mysqlコマンドやクライアントでの操作はできない。なので初期パスワードを取得
+- name: get temporary password
+  shell: cat /var/log/mysqld.log | grep "temporary password" | awk '{print $11}'
+  register: MYSQL_DEFAULT_PASSWORD
+  changed_when: false
+
+# パスワードに少なくとも1つの大文字、1つの小文字、1つの数字、および1つの特殊文字が含まれ、パスワードの合計長が少なくとも8文字
+- name: update expired root user password
+  shell: mysql -u root -p"{{ MYSQL_DEFAULT_PASSWORD.stdout }}" --connect-expired-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ MYSQL_PASSWORD }}';"
+  ignore_errors: True
+  changed_when: result.rc != true
+  register: result
+
+- name: Create a new database with name 'wordpress'
+  mysql_db:
+    name: wordpress
+    state: present
+    login_password: "{{ MYSQL_PASSWORD }}"
+    login_user: root
+
+# パスワードに少なくとも1つの大文字、1つの小文字、1つの数字、および1つの特殊文字が含まれ、パスワードの合計長が少なくとも8文字
+- name: create mysql user
+  mysql_user:
+    login_password: "{{ MYSQL_PASSWORD }}"
+    login_user: root
+    name: "wordpress"
+    password: "Password1@"
+    host: "localhost"
+    # "ユーザ名.db名:権限範囲"
+    priv: "wordpress.wordpress:ALL"
+  notify:
+    - restart mysqld
