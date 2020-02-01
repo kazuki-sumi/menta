@@ -9,11 +9,12 @@
 - name: start nginx
   systemd: name=nginx enabled=yes state=started
 
-- name: copy nginx default.conf
+- name: copy nginx pre.menta.me.conf
   copy:
-    dest: /etc/nginx/conf.d/default.conf
-    src: ./roles/nginx/files/default.conf
+    dest: /etc/nginx/conf.d/pre.menta.me.conf
+    src: ./roles/nginx/files/pre.menta.me.conf
     backup: no
     owner: root
     group: root
     mode: 0644
+  notify: restart nginx
