@@ -1,13 +1,9 @@
 # hosts: インベントリーファイルに記載したグループを指定。allなら全て
-- hosts: web
-  become: yes
-  become_user: root
+- hosts: all
   roles:
     - common
 
-- hosts: web
-  become: yes
-  become_user: root
+- hosts: pre
   roles:
     - nginx
     - php
