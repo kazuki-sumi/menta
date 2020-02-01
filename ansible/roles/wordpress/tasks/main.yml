@@ -20,3 +20,9 @@
   command:
     cmd: mv wordpress pre.menta.me
     chdir: /var/www
+    creates: /var/www/pre.menta.me
+
+- name: copy wp-config.php
+  copy:
+    dest: /var/www/pre.menta.me/wp-config.php
+    src: ./roles/mysql/files/wp-config.php
