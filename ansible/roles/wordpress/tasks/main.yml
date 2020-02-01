@@ -11,6 +11,11 @@
     group: nginx
     owner: nginx
 
+- name: delete wordpress-5.3.2-ja.tar.gz
+  file :
+    state: absent
+    path: /var/www/wordpress-5.3.2-ja.tar.gz
+
 - name: rename from wordpress to pre.menta.me
   command:
     cmd: mv wordpress pre.menta.me
