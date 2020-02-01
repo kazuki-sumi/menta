@@ -1,0 +1,15 @@
+##=====COMMON=====##
+PUBLIC_KEY_PATH: "/Users/sumikazuki/Desktop/menta/ansible/id_rsa.pub"
+
+##=====REPOSITORIES=====##
+# php
+PHP_VERSION_REMI: "http://rpms.famillecollet.com/enterprise/remi-release-7.rpm"
+PHP_VERSION_EPEL: "epel-release"
+
+# mysql
+MYSQL_VERSION: "http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm"
+
+MYSQL_PASSWORD: 'Password1@'
+
+# wordpress
+WORDPRESS_URL: "https://ja.wordpress.org/latest-ja.tar.gz"
