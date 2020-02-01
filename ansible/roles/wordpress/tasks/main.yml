@@ -1,7 +1,7 @@
 - name: download wordpress
   get_url:
     dest: /var/www
-    url: https://ja.wordpress.org/latest-ja.tar.gz
+    url: "{{ WORDPRESS_URL }}"
 
 - name: unzip wordpress
   unarchive:
