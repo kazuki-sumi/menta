@@ -1,0 +1,19 @@
+# サーバーの管理者が独自に変更・編集した設定ファイルは /etc/systemd/system フォルダに配置する
+# /etc/systemd/system/redmine-unicorn.service
+
+[Unit]
+Description=Redmine Unicorn Server
+After=mysqld.service
+
+[Service]
+WorkingDirectory=/opt/redmine
+Environment=RAILS_ENV=production
+SyslogIdentifier=redmine-unicorn
+PIDFile=/opt/redmine/tmp/pids/unicorn.pid
+
+ExecStart=/root/.rbenv/shims/bundle exec "unicorn_rails -c config/unicorn.rb -E production"
+ExecStop=/usr/bin/kill -QUIT $MAINPID
+ExecReload=/bin/kill -USR2 $MAINPID
+
+[Install]
+WantedBy=multi-user.target
