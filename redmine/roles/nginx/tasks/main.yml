@@ -1,0 +1,25 @@
+# デフォルトリポジトリ(ソフトウェアの保存場所)の/etc/yum.repos.d/CentOS-Base.repoからだと古いことが多い
+# なので外部からインストールしたいNginxのバージョンの場所を書いた設定ファイルを作成する。
+# stableは重大なバグ修正のみ反映されサードパーティのモジュールへの影響がほとんどない
+- name: copy nginx.repo
+  copy:
+    dest: /etc/yum.repos.d/nginx.repo
+    src: ./roles/nginx/files/nginx.repo
+
+- name: install nginx and openssl
+  yum: name={{ item }} state=present
+  loop:
+    - nginx
+
+- name: start nginx
+  systemd: name=nginx enabled=yes state=started
+
+- name: copy nginx redmine.conf
+  copy:
+    dest: /etc/nginx/conf.d/redmine.conf
+    src: ./roles/nginx/files/redmine.conf
+    backup: no
+    owner: nginx
+    group: nginx
+    mode: 0644
+  notify: restart nginx
