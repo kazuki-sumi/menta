@@ -6,3 +6,4 @@
   roles:
     - nginx
     - mysql
+    - ruby
