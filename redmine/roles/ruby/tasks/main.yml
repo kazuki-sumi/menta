@@ -8,60 +8,41 @@
     - readline-devel
     - zlib-devel
 
-- name: install rbenv
+- name: git clone rbenv
   git:
     repo: https://github.com/sstephenson/rbenv.git
-    dest: "{{ HOME }}/.rbenv"
+    dest: /usr/local/rbenv/
 
 - name: change .rbenv owner
   file:
+    state: directory
     owner: vagrant
     group: vagrant
     mode: 0764
-    path: "{{ HOME }}/.rbenv"
+    path: /usr/local/rbenv/
 
-- name: add rbenv path
-  lineinfile:
-    state: present
-    path: "{{ HOME }}/.bash_profile"
-    line: "{{ item }}"
-  loop:
-    - export PATH="$HOME/.rbenv/bin:$PATH"
-    - eval "$(rbenv init -)"
-  notify:
-    - reflect source
+- name: insert/update /etc/profile env
+  blockinfile:
+    path: /etc/profile
+    block: |
+      export RBENV_ROOT="/usr/local/rbenv"
+      export PATH="${RBENV_ROOT}/bin:${PATH}"
+      eval "$(rbenv init -)"
 
-- name: get ruby-build
+- name: source /etc/profile
+  shell: bash -lc "source /etc/profile"
+
+- name: git clone ruby-build
   git:
     repo: git://github.com/sstephenson/ruby-build.git
-    dest: "{{ HOME }}/.rbenv/plugins/ruby-build"
-
-# - name: ruby-build check installed
-#   shell: bash -lc "rbenv install -l | grep 2.5.0"
-#   register: ruby_build_check_installed
-#   changed_when: False
-#   ignore_errors: yes
+    dest: /usr/local/rbenv/plugins/ruby-build/
 
 - name: install ruby-build
-  shell: bash -lc "{{ HOME }}/.rbenv/plugins/ruby-build/install.sh"
-  # when: not ruby_build_check_installed
-
-# - name: ruby check installed
-#   shell: bash -lc "ruby -v | grep -o 'ruby 2.5.0'"
-#   register: ruby_check_installed
-#   changed_when: False
-#   ignore_errors: yes
+  shell: bash -lc "/usr/local/rbenv/plugins/ruby-build/install.sh"
 
 - name: install ruby2.5.0
-  shell: bash -lc "rbenv install 2.5.0"
-  # when: not ruby_check_installed
-
-# - name: check gloval ruby version
-#   shell: bash -lc "rbenv version | grep -o '2.5.0'"
-#   register: check_gloval_ruby_version
-#   changed_when: False
-#   ignore_errors: yes
+  shell: bash -lc "/usr/local/rbenv/bin/rbenv install -v 2.5.0"
 
 - name: set ruby2.5.0 to gloval
-  shell: bash -lc "rbenv global 2.5.0"
-  # when: not check_gloval_ruby_version
+  shell: bash -lc "/usr/local/rbenv/bin/rbenv global 2.5.0"
+  ignore_errors: yes

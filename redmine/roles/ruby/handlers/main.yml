@@ -1,2 +1,0 @@
-- name: reflect source
-  shell: source "{{ HOME }}/.bash_profile"
