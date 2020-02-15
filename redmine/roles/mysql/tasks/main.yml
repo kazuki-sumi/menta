@@ -8,10 +8,11 @@
   loop:
     - "{{ MYSQL_VERSION }}"
 
-- name: install mysqld
+- name: install mysqld and mysql-devel
   yum: name={{ item }} state=installed
   loop:
     - mysql-community-server
+    - mysql-devel
 
 - name: start mysql
   systemd: name=mysqld enabled=yes state=started
