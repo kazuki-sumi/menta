@@ -1,0 +1,7 @@
+- name: install bundler
+  shell: bash -lc "gem install bundler"
+  ignore_errors: yes
+
+- name: install rails 5.2.2
+  shell: bash -lc "gem install rails --version="5.2.2""
+  ignore_errors: yes
