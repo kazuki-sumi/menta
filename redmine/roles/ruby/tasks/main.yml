@@ -7,6 +7,10 @@
     - openssl-devel
     - readline-devel
     - zlib-devel
+    - libyaml-devel
+    - libffi-devel
+    - gdbm-devel
+    - ncurses-devel
 
 - name: git clone rbenv
   git:
