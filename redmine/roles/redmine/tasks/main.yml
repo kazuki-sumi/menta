@@ -1,0 +1,79 @@
+- name: download redmine
+  get_url:
+    url: http://www.redmine.org/releases/redmine-4.0.0.tar.gz
+    dest: /opt/
+
+- name: unpack redmine
+  unarchive:
+    dest: /opt/
+    remote_src: yes
+    src: /opt/redmine-4.0.0.tar.gz
+    owner: vagrant
+    group: vagrant
+
+- name: rename from redmine-4.0.0 to redmine
+  command:
+    cmd: mv redmine-4.0.0 redmine
+    chdir: /opt/
+    creates: /opt/redmine
+
+- name: copy Gemfile
+  copy:
+    dest: /opt/redmine/Gemfile
+    src: ./roles/redmine/files/Gemfile
+    owner: vagrant
+    group: vagrant
+    mode: "0664"
+
+- name: copy database.yml
+  copy:
+    dest: /opt/redmine/config
+    src: ./roles/redmine/files/database.yml
+    owner: vagrant
+    group: vagrant
+    mode: "0664"
+
+- name: bundle lock x86-mingw32 x64-mingw32 x86-mswin32
+  shell: /usr/local/rbenv/shims/bundle lock --add-platform x86-mingw32 x64-mingw32 x86-mswin32
+  args:
+    chdir: /opt/redmine/
+
+- name: bundle install
+  bundler:
+    state: present
+    gemfile: /opt/redmine/Gemfile
+    executable: /usr/local/rbenv/shims/bundle
+    exclude_groups: development, test
+
+- name: generate_secret_token
+  shell: /usr/local/rbenv/shims/bundle exec rake generate_secret_token
+  args:
+    chdir: /opt/redmine/
+
+- name: create /opt/redmine/app/assets/config
+  file:
+    path: /opt/redmine/app/assets/config
+    state: directory
+    owner: vagrant
+    group: vagrant
+    mode: "0755"
+
+- name: create manifest.js
+  copy:
+    dest: /opt/redmine/app/assets/config/manifest.js
+    src: ./roles/redmine/files/manifest.js
+    owner: vagrant
+    group: vagrant
+    mode: "0755"
+
+- name: create redmine db
+  shell: /usr/local/rbenv/shims/bundle exec rake db:create RAILS_ENV=production
+  args:
+    chdir: /opt/redmine/
+
+- name: make db migrate
+  shell: /usr/local/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=production
+  args:
+    chdir: /opt/redmine/
+
+
