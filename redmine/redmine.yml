@@ -7,3 +7,6 @@
     - nginx
     - mysql
     - ruby
+    - rails
+    - redmine
+    - unicorn
