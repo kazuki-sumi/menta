@@ -11,6 +11,8 @@
     - libffi-devel
     - gdbm-devel
     - ncurses-devel
+    - ImageMagick
+    - ImageMagick-devel
 
 - name: git clone rbenv
   git:

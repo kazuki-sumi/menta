@@ -38,18 +38,6 @@
   args:
     chdir: /opt/redmine/
 
-- name: bundle install
-  bundler:
-    state: present
-    gemfile: /opt/redmine/Gemfile
-    executable: /usr/local/rbenv/shims/bundle
-    exclude_groups: development, test
-
-- name: generate_secret_token
-  shell: /usr/local/rbenv/shims/bundle exec rake generate_secret_token
-  args:
-    chdir: /opt/redmine/
-
 - name: create /opt/redmine/app/assets/config
   file:
     path: /opt/redmine/app/assets/config
@@ -65,15 +53,3 @@
     owner: vagrant
     group: vagrant
     mode: "0755"
-
-- name: create redmine db
-  shell: /usr/local/rbenv/shims/bundle exec rake db:create RAILS_ENV=production
-  args:
-    chdir: /opt/redmine/
-
-- name: make db migrate
-  shell: /usr/local/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=production
-  args:
-    chdir: /opt/redmine/
-
-
