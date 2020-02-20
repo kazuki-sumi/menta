@@ -7,9 +7,7 @@
     src: roles/nginx/files/nginx.repo
 
 - name: install nginx and openssl
-  yum: name={{ item }} state=present
-  loop:
-    - nginx
+  yum: name=nginx state=present
 
 - name: start nginx
   systemd: name=nginx enabled=yes state=started
