@@ -2,10 +2,10 @@
 # Unicornは複数のワーカーで起動するのでワーカー数を定義
 # サーバーのメモリなどによって変更すること。
 worker_processes 2
-app_path = "/opt/redmine"
+app_path = "/var/www/redmine"
 # Nginxで使用する場合は以下の設定を行う。
 
-listen "#{app_path}/tmp/unicorn_redmine.sock"
+listen "#{app_path}/tmp/redmine-unicorn.sock"
 # プロセスの停止などに必要なPIDファイルの保存先を指定。
 pid "#{app_path}/tmp/unicorn.pid"
 stderr_path "#{app_path}/log/unicorn.stderr.log"

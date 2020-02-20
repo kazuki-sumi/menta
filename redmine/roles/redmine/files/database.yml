@@ -3,7 +3,7 @@ production:
   database: redmine
   host: localhost
   username: root
-  password: "Password@1"
+  password: "Password1@"
   encoding: utf8
 
 development:
