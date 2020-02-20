@@ -4,7 +4,7 @@
 - name: copy nginx.repo
   copy:
     dest: /etc/yum.repos.d/nginx.repo
-    src: ./roles/nginx/files/nginx.repo
+    src: roles/nginx/files/nginx.repo
 
 - name: install nginx and openssl
   yum: name={{ item }} state=present
@@ -17,7 +17,7 @@
 - name: copy nginx redmine.conf
   copy:
     dest: /etc/nginx/conf.d/redmine.conf
-    src: ./roles/nginx/files/redmine.conf
+    src: roles/nginx/files/redmine.conf
     backup: no
     owner: nginx
     group: nginx
