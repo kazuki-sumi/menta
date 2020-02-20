@@ -1,0 +1,12 @@
+- hosts: all
+  roles:
+    - common
+
+- hosts: redmine
+  roles:
+    - nginx
+    - mysql
+    - ruby
+    - rails
+    - redmine
+    - unicorn

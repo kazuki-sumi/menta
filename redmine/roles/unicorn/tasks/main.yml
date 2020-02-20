@@ -1,0 +1,21 @@
+- name: copy unicorn.rb
+  copy:
+    dest: /var/www/redmine/config/unicorn.rb
+    src: roles/unicorn/files/unicorn.rb
+    owner: vagrant
+    group: vagrant
+    mode: "0664"
+
+- name: copy redmine-unicorn.service
+  copy:
+    dest: /etc/systemd/system/redmine-unicorn.service
+    src: roles/unicorn/files/redmine-unicorn.service
+    owner: vagrant
+    group: vagrant
+    mode: "0664"
+
+- name: disable SELinux
+  selinux: state=disabled
+
+- name: start unicorn
+  systemd: name=redmine-unicorn enabled=yes state=started

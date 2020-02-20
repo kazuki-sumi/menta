@@ -1,0 +1,18 @@
+- name: delete mariadb
+  yum:
+    name: mariadb-libs
+    state: removed
+
+- name: install rpm
+  yum: name={{ item }} state=present
+  loop:
+    - "{{ MYSQL_VERSION }}"
+
+- name: install mysqld and mysql-devel
+  yum: name={{ item }} state=installed
+  loop:
+    - mysql-community-server
+    - mysql-devel
+
+- name: start mysql
+  systemd: name=mysqld enabled=yes state=started

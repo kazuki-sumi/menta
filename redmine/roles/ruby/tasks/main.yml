@@ -1,0 +1,141 @@
+- name: install development tools
+  yum: name={{ item }} state=present
+  loop:
+    - git
+    - bzip2
+    - gcc
+    - openssl-devel
+    - readline-devel
+    - zlib-devel
+    - libyaml-devel
+    - libffi-devel
+    - gdbm-devel
+    - ncurses-devel
+    - ImageMagick
+    - ImageMagick-devel
+
+- name: git clone rbenv
+  git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: /usr/local/rbenv/
+
+- name: change .rbenv owner
+  file:
+    state: directory
+    owner: vagrant
+    group: vagrant
+    mode: 0764
+    path: /usr/local/rbenv/
+
+- name: insert/update /etc/profile env
+  blockinfile:
+    path: /etc/profile
+    block: |
+      export RBENV_ROOT="/usr/local/rbenv"
+      export PATH="${RBENV_ROOT}/bin:${PATH}"
+      eval "$(rbenv init -)"
+
+- name: source /etc/profile
+  shell: bash -lc "source /etc/profile"
+
+- name: confirm ruby
+  command: bash -lc "ruby -v |awk '{print $1 $2}'"
+  register: result
+  changed_when: false
+
+- name: git clone ruby-build
+  when: result.stdout != "ruby2.5.0p0"
+  git:
+    repo: git://github.com/sstephenson/ruby-build.git
+    dest: /usr/local/rbenv/plugins/ruby-build/
+
+- name: install ruby-build
+  when: result.stdout != "ruby2.5.0p0"
+  shell: bash -lc "/usr/local/rbenv/plugins/ruby-build/install.sh"
+
+- name: install ruby2.5.0
+  when: result.stdout != "ruby2.5.0p0"
+  shell: bash -lc "/usr/local/rbenv/bin/rbenv install -v 2.5.0"
+
+- name: set ruby2.5.0 to gloval
+  when: result.stdout != "ruby2.5.0p0"
+  shell: bash -lc "/usr/local/rbenv/bin/rbenv global 2.5.0"
+  ignore_errors: yes
+
+# 最初 /home/vagrant/.rbenv下にインストールしてやっていたけど「rbenv：command not found」が出てインストールされなかった。
+# これはおそらく.bash_profileが読み込まれなかったのが原因かも
+# 参考
+# https://hondash.app/ansible-path/
+# https://blog.thingslabo.com/archives/000395.html
+# 環境変数の読み込み順はこれを参考
+# https://qiita.com/yunzeroin/items/480a3a677f78a57ac52f
+
+# また後々挑戦できるように残す
+
+# - name: install development tools
+#   yum: name={{ item }} state=present
+#   loop:
+#     - git
+#     - bzip2
+#     - gcc
+#     - openssl-devel
+#     - readline-devel
+#     - zlib-devel
+
+# - name: install rbenv
+#   git:
+#     repo: https://github.com/sstephenson/rbenv.git
+#     dest: "{{ HOME }}/.rbenv"
+
+# - name: change .rbenv owner
+#   file:
+#     owner: vagrant
+#     group: vagrant
+#     mode: 0764
+#     path: "{{ HOME }}/.rbenv"
+
+# - name: add rbenv path
+#   lineinfile:
+#     state: present
+#     path: "{{ HOME }}/.bash_profile"
+#     line: "{{ item }}"
+#   loop:
+#     - export PATH="$HOME/.rbenv/bin:$PATH"
+#     - eval "$(rbenv init -)"
+#   notify:
+#     - reflect source
+
+# - name: get ruby-build
+#   git:
+#     repo: git://github.com/sstephenson/ruby-build.git
+#     dest: "{{ HOME }}/.rbenv/plugins/ruby-build"
+
+# - name: ruby-build check installed
+#   shell: bash -lc "rbenv install -l | grep 2.5.0"
+#   register: ruby_build_check_installed
+#   changed_when: False
+#   ignore_errors: yes
+
+# - name: install ruby-build
+#   shell: bash -lc "{{ HOME }}/.rbenv/plugins/ruby-build/install.sh"
+  # when: not ruby_build_check_installed
+
+# - name: ruby check installed
+#   shell: bash -lc "ruby -v | grep -o 'ruby 2.5.0'"
+#   register: ruby_check_installed
+#   changed_when: False
+#   ignore_errors: yes
+
+# - name: install ruby2.5.0
+#   shell: bash -lc "rbenv install 2.5.0"
+  # when: not ruby_check_installed
+
+# - name: check gloval ruby version
+#   shell: bash -lc "rbenv version | grep -o '2.5.0'"
+#   register: check_gloval_ruby_version
+#   changed_when: False
+#   ignore_errors: yes
+
+# - name: set ruby2.5.0 to gloval
+#   shell: bash -lc "rbenv global 2.5.0"
+# when: not check_gloval_ruby_version

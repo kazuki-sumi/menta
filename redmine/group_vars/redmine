@@ -1,0 +1,7 @@
+# home path
+HOME: "/home/vagrant"
+# mysql
+MYSQL_VERSION: "http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm"
+
+# rails
+RAILS_VERSION: "5.2.2"
