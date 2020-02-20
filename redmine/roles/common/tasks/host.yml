@@ -1,0 +1,4 @@
+- name: name resolution
+  copy:
+    dest: /etc/hosts
+    src: roles/common/files/hosts
