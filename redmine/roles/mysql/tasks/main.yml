@@ -16,13 +16,3 @@
 
 - name: start mysql
   systemd: name=mysqld enabled=yes state=started
-
-- name: get temporary password
-  shell: cat /var/log/mysqld.log | grep "temporary password" | awk '{print $11}'
-  register: MYSQL_DEFAULT_PASSWORD
-  # changed_when: false
-
-- name: update expired root user password
-  shell: mysql -u root -p"{{ MYSQL_DEFAULT_PASSWORD.stdout }}" --connect-expired-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ MYSQL_PASSWORD }}';"
-  ignore_errors: True
-  #changed_when: result.rc != true
