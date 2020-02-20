@@ -38,18 +38,27 @@
 - name: source /etc/profile
   shell: bash -lc "source /etc/profile"
 
+- name: confirm ruby
+  command: bash -lc "ruby -v |awk '{print $1 $2}'"
+  register: result
+  changed_when: false
+
 - name: git clone ruby-build
+  when: result.stdout != "ruby2.5.0p0"
   git:
     repo: git://github.com/sstephenson/ruby-build.git
     dest: /usr/local/rbenv/plugins/ruby-build/
 
 - name: install ruby-build
+  when: result.stdout != "ruby2.5.0p0"
   shell: bash -lc "/usr/local/rbenv/plugins/ruby-build/install.sh"
 
 - name: install ruby2.5.0
+  when: result.stdout != "ruby2.5.0p0"
   shell: bash -lc "/usr/local/rbenv/bin/rbenv install -v 2.5.0"
 
 - name: set ruby2.5.0 to gloval
+  when: result.stdout != "ruby2.5.0p0"
   shell: bash -lc "/usr/local/rbenv/bin/rbenv global 2.5.0"
   ignore_errors: yes
 
