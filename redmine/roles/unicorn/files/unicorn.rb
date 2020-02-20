@@ -1,18 +1,18 @@
 # /opt/redmine/config/unicorn.rb
+# https://maeharin.hatenablog.com/entry/20130104/p1
 # Unicornは複数のワーカーで起動するのでワーカー数を定義
 # サーバーのメモリなどによって変更すること。
 worker_processes 2
 app_path = "/var/www/redmine"
 # Nginxで使用する場合は以下の設定を行う。
-
-listen "#{app_path}/tmp/unicorn.sock"
+listen File.expand_path('tmp/unicorn.sock', app_path)
 # プロセスの停止などに必要なPIDファイルの保存先を指定。
-pid "#{app_path}/tmp/unicorn.pid"
-stderr_path "#{app_path}/log/unicorn.stderr.log"
-stdout_path "#{app_path}/log/unicorn.stdout.log"
+pid File.expand_path('tmp/unicorn.pid', app_path)
+stderr_path File.expand_path('log/unicorn.stderr.log', app_path)
+stdout_path File.expand_path('log/unicorn.stdout.log', app_path)
 # Unicornのエラーログと通常ログの位置を指定。
-stderr_path "#{app_path}/log/unicorn.stderr.log"
-stdout_path "#{app_path}/log/unicorn.stdout.log"
+stderr_path File.expand_path('log/unicorn.stderr.log', app_path)
+stdout_path File.expand_path('log/unicorn.stdout.log', app_path)
 
 preload_app true
 # 接続タイムアウト時間
