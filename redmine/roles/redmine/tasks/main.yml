@@ -1,34 +1,60 @@
+- name: change permision of var
+  file:
+    path: /var/
+    owner: vagrant
+    group: vagrant
+    state: directory
+    mode: "0755"
+
+- name: mkdir www
+  file:
+    path: /var/www
+    owner: vagrant
+    group: vagrant
+    state: directory
+    mode: "0755"
+
+- name: confirm redmine
+  find:
+    path: /var/www
+    file_type: directory
+    patterns: "redmine"
+  register: result
+
 - name: download redmine
+  when: result.matched != 1
   get_url:
     url: http://www.redmine.org/releases/redmine-4.0.0.tar.gz
-    dest: /opt/
+    dest: /var/www/
 
 - name: unpack redmine
+  when: result.matched != 1
   unarchive:
-    dest: /opt/
+    dest: /var/www/
     remote_src: yes
-    src: /opt/redmine-4.0.0.tar.gz
+    src: /var/www/redmine-4.0.0.tar.gz
     owner: vagrant
     group: vagrant
 
 - name: rename from redmine-4.0.0 to redmine
+  when: result.matched != 1
   command:
     cmd: mv redmine-4.0.0 redmine
-    chdir: /opt/
-    creates: /opt/redmine
+    chdir: /var/www/
+    creates: /var/www/redmine
 
 - name: copy Gemfile
   copy:
-    dest: /opt/redmine/Gemfile
-    src: ./roles/redmine/files/Gemfile
+    dest: /var/www/redmine/Gemfile
+    src: roles/redmine/files/Gemfile
     owner: vagrant
     group: vagrant
     mode: "0664"
 
 - name: copy database.yml
   copy:
-    dest: /opt/redmine/config
-    src: ./roles/redmine/files/database.yml
+    dest: /var/www/redmine/config
+    src: roles/redmine/files/database.yml
     owner: vagrant
     group: vagrant
     mode: "0664"
@@ -36,11 +62,11 @@
 - name: bundle lock x86-mingw32 x64-mingw32 x86-mswin32
   shell: /usr/local/rbenv/shims/bundle lock --add-platform x86-mingw32 x64-mingw32 x86-mswin32
   args:
-    chdir: /opt/redmine/
+    chdir: /var/www/redmine/
 
-- name: create /opt/redmine/app/assets/config
+- name: create /var/www/redmine/app/assets/config
   file:
-    path: /opt/redmine/app/assets/config
+    path: /var/www/redmine/app/assets/config
     state: directory
     owner: vagrant
     group: vagrant
@@ -48,8 +74,8 @@
 
 - name: create manifest.js
   copy:
-    dest: /opt/redmine/app/assets/config/manifest.js
-    src: ./roles/redmine/files/manifest.js
+    dest: /var/www/redmine/app/assets/config/manifest.js
+    src: roles/redmine/files/manifest.js
     owner: vagrant
     group: vagrant
     mode: "0755"
